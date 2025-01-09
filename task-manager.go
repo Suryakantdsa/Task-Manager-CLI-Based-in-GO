@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 )
 
 type Task struct {
@@ -12,6 +14,44 @@ type Task struct {
 
 var tasks []Task
 var taskCount int = 1
+
+func SaveTasksToFile() {
+	file, err := os.Create("tasks.json")
+	if err != nil {
+		fmt.Println("Error while saving task", err)
+		return
+	}
+	defer file.Close()
+
+	encoded := json.NewEncoder(file)
+	err = encoded.Encode(tasks)
+	if err != nil {
+		fmt.Println("error while encodeing task to file", err)
+		return
+	}
+
+}
+
+func LoadTasksFromFile() {
+	file, err := os.Open("tasks.json")
+	if err != nil {
+		if os.IsNotExist(err) {
+			fmt.Println("No file exist..")
+			return
+		}
+		fmt.Println("Error while loading task..!")
+
+	}
+	defer file.Close()
+
+	decoded := json.NewDecoder(file)
+	err = decoded.Decode(&tasks)
+	if err != nil {
+		fmt.Println("Error while decoding the file", err)
+		return
+	}
+
+}
 
 func displayMenu() {
 	fmt.Println("\n Task manager")
@@ -79,6 +119,7 @@ func DeleteTask() {
 }
 
 func main() {
+	LoadTasksFromFile()
 	for {
 		displayMenu()
 		var choice int
@@ -87,12 +128,16 @@ func main() {
 		switch choice {
 		case 1:
 			AddTask()
+			SaveTasksToFile()
 		case 2:
 			ViewTask()
+			SaveTasksToFile()
 		case 3:
 			MarkAsDone()
+			SaveTasksToFile()
 		case 4:
 			DeleteTask()
+			SaveTasksToFile()
 		case 5:
 			fmt.Println("Exiting... Goodbye.!")
 			return
