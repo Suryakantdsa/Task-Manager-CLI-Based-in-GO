@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Task struct {
 	ID   int
@@ -41,7 +43,7 @@ func ViewTask() {
 		if task.Done {
 			status = "Done"
 		}
-		fmt.Printf("%d %s %s", task.ID, task.Name, status)
+		fmt.Printf("%d %s [%s]\n", task.ID, task.Name, status)
 	}
 }
 func MarkAsDone() {
@@ -49,7 +51,7 @@ func MarkAsDone() {
 	fmt.Println("Enter task ID to mark as Done: ")
 	fmt.Scanln(&id)
 	for idx, task := range tasks {
-		if task.ID == idx {
+		if task.ID == id {
 			tasks[idx].Done = true
 			fmt.Println("Task marked as Done !")
 			return
@@ -60,12 +62,44 @@ func MarkAsDone() {
 
 }
 func DeleteTask() {
+	var id int
+	fmt.Println("Enter task ID to delete :")
+	fmt.Scanln(&id)
+
+	for i, task := range tasks {
+		if task.ID == id {
+			tasks = append(tasks[:i], tasks[i+1:]...)
+			fmt.Println("Task deleted sucessfully..!")
+			return
+
+		}
+	}
+	fmt.Println("No task found..!")
 
 }
 
 func main() {
-	displayMenu()
-	ViewTask()
-	MarkAsDone()
+	for {
+		displayMenu()
+		var choice int
+		fmt.Scanln(&choice)
+
+		switch choice {
+		case 1:
+			AddTask()
+		case 2:
+			ViewTask()
+		case 3:
+			MarkAsDone()
+		case 4:
+			DeleteTask()
+		case 5:
+			fmt.Println("Exiting... Goodbye.!")
+			return
+		default:
+			fmt.Println("Invalid choice . please try again")
+
+		}
+	}
 
 }
