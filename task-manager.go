@@ -30,7 +30,42 @@ func AddTask() {
 	fmt.Println("Task added sucessfully")
 
 }
+func ViewTask() {
+	if len(tasks) == 0 {
+		fmt.Println("No task is available")
+		return
+	}
+	fmt.Println("\n Task:")
+	for _, task := range tasks {
+		status := "Pending"
+		if task.Done {
+			status = "Done"
+		}
+		fmt.Printf("%d %s %s", task.ID, task.Name, status)
+	}
+}
+func MarkAsDone() {
+	var id int
+	fmt.Println("Enter task ID to mark as Done: ")
+	fmt.Scanln(&id)
+	for idx, task := range tasks {
+		if task.ID == idx {
+			tasks[idx].Done = true
+			fmt.Println("Task marked as Done !")
+			return
+
+		}
+	}
+	fmt.Println("No task found..!")
+
+}
+func DeleteTask() {
+
+}
 
 func main() {
+	displayMenu()
+	ViewTask()
+	MarkAsDone()
 
 }
