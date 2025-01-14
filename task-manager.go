@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type Task struct {
@@ -63,10 +65,22 @@ func displayMenu() {
 	fmt.Println("Choose an option:")
 }
 func AddTask() {
-	var name string
-	fmt.Println("Enter name of task:")
-	fmt.Scanln(&name)
-	task := Task{ID: taskCount, Name: name, Done: false}
+	// var name string
+	// fmt.Println("Enter name of task:")
+	// fmt.Scanln(&name)
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter task name: ")
+
+	// Read the entire line including spaces
+	taskName, _ := reader.ReadString('\n')
+	fmt.Println("task=", taskName)
+	taskName = strings.TrimSpace(taskName) // Trim trailing newline or spaces
+	if taskName == "" {
+		fmt.Println("Task name cannot be empty.")
+		return
+	}
+	task := Task{ID: taskCount, Name: taskName, Done: false}
 	tasks = append(tasks, task)
 	taskCount++
 	fmt.Println("Task added sucessfully")
